@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    # Проброс портов здесь НЕ нужен (и будет мешать при scale).
+    # Контейнеры будут общаться только внутри закрытой Docker-сети по порту 8080.
