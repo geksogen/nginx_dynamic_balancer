@@ -1,14 +1,16 @@
-version: '3'
-
 services:
-  frontend:
-    build: ./frontend
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:alpine
     ports:
       - "80:80"
-    depends_on:
-      - backend
+    volumes:
+      # Пробрасываем сокет Docker, чтобы proxy мог слушать события (создание/удаление контейнеров)
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
   backend:
     build: ./backend
-    # Проброс портов здесь НЕ нужен (и будет мешать при scale).
-    # Контейнеры будут общаться только внутри закрытой Docker-сети по порту 8080.
+    environment:
+      # Nginx-proxy автоматически создаст маршрут для этого домена
+      - VIRTUAL_HOST=backend.test
+      # Указываем, на какой порт внутри контейнера слать трафик (т.к. наш Python работает на 8080)
+      - VIRTUAL_PORT=8080
