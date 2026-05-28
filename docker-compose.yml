@@ -5,6 +5,7 @@ services:
       - "80:80"
     volumes:
       # Пробрасываем сокет Docker, чтобы proxy мог слушать события (создание/удаление контейнеров)
+      # :ro сокет только на чтение (безопасность)
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
   backend:
